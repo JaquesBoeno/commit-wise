@@ -1,0 +1,84 @@
+Questions:
+  - id: type
+    type: select
+    label: "Select the type of change you're committing"
+    options:
+      - name: feat
+        desc: "A new feature"
+      - name: fix
+        desc: "A bug fix"
+      - name: docs
+        desc: "Documentation only changes"
+      - name: style
+        desc: "Changes that do not affect the meaning of the code\n(white-space, formatting, missing semi-colons, etc)"
+      - name: refactor
+        desc: "A code change that neither fixes a bug nor adds a feature"
+      - name: perf
+        desc: "A code change that improves performance"
+      - name: test
+        desc: "Adding missing tests"
+      - name: chore
+        desc: "Changes to the build process or auxiliary tools\nand libraries such as documentation generation"
+      - name: revert
+        desc: "Revert to a commit"
+      - name: WIP
+        desc: "WIP: Work in progress"
+
+  - id: scope
+    type: text
+    label: "What scope of this change? (e.g. backend or cli)"
+    min: 1
+    max: 66
+
+  - id: subject
+    type: text
+    label: "Write a short, imperative tense description of change (max 66 chars)"
+    errorMsg: "Write a minimal 1 and max 66 chars"
+    min: 1
+    max: 66
+
+  - id: desc
+    type: text
+    label: "Provide a large description of the changes: (press enter for skip)"
+    errorMsg: "write a valid text"
+    min: 0
+    max: 1000
+
+  - id: issues
+    type: confirm
+    label: "Does this change affect any open issues"
+    questions:
+      - id: issues
+        type: text
+        label: "Write about this"
+        errorMsg: "write a valid text"
+        min: 0
+        max: 1000
+      - id: issues2
+        type: text
+        label: "Write about this 2"
+        errorMsg: "write a valid text"
+        min: 0
+        max: 1000
+
+  - id: breakChanges
+    type: confirm
+    label: "Are there any breaking changes"
+    questions:
+      - id: breakChanges
+        type: text
+        label: "Write about this"
+        errorMsg: "write a valid text"
+        min: 0
+        max: 1000
+
+TemplateCommit: |
+  <type>(<scope>): <subject>
+
+  <desc>
+
+  <breakChanges>
+
+  <issues>
+
+  <issues2>
