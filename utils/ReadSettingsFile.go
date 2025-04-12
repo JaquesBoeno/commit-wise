@@ -17,8 +17,8 @@ type question struct {
 	Questions []question `yaml:"questions"`
 }
 type option struct {
-	Name string
-	Desc string
+	Name string `yaml:"name"`
+	Desc string `yaml:"desc"`
 }
 
 type Settings struct {
