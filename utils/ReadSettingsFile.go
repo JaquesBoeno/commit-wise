@@ -7,14 +7,14 @@ import (
 	"path/filepath"
 )
 
-type question struct {
+type Question struct {
 	Id        string     `yaml:"id"`
 	Type      string     `yaml:"type"`
 	Label     string     `yaml:"label"`
 	Min       int        `yaml:"min"`
 	Max       int        `yaml:"max"`
 	Options   []option   `yaml:"options"`
-	Questions []question `yaml:"questions"`
+	Questions []Question `yaml:"questions"`
 }
 type option struct {
 	Name string `yaml:"name"`
@@ -23,7 +23,7 @@ type option struct {
 
 type Settings struct {
 	TemplateCommit string     `yaml:"TemplateCommit"`
-	Questions      []question `yaml:"Questions"`
+	Questions      []Question `yaml:"Questions"`
 }
 
 func getConfigPath() (string, error) {

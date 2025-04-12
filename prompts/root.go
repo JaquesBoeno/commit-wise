@@ -2,23 +2,10 @@ package prompts
 
 import (
 	"fmt"
+	"github.com/JaquesBoeno/CommitWise/utils"
 	tea "github.com/charmbracelet/bubbletea"
 	"strings"
 )
-
-type Question struct {
-	Id        string
-	Type      string
-	Label     string
-	Min       int8
-	Max       int8
-	Options   []Option
-	Questions []Question
-}
-type Option struct {
-	Name string
-	Desc string
-}
 
 type Answer struct {
 	Id    string
@@ -26,37 +13,21 @@ type Answer struct {
 }
 
 type Model struct {
-	Questions []Question
+	Questions []utils.Question
 	Answers   []Answer
 
 	ShownAnswered        string
-	CurrentQuestion      Question
+	CurrentQuestion      utils.Question
 	CurrentQuestionIndex int
 	Cursor               int
 }
 
-func InitialModel() Model {
+func InitialModel(config utils.Settings) Model {
 	return Model{
-		Questions: []Question{{
-			Id:        "type",
-			Type:      "select",
-			Label:     "type of change",
-			Min:       0,
-			Max:       0,
-			Options:   []Option{{Name: "fix", Desc: "fix a bug"}, {Name: "style", Desc: "css style"}},
-			Questions: nil,
-		}},
-		ShownAnswered: "",
-		CurrentQuestion: Question{
-			Id:        "type",
-			Type:      "select",
-			Label:     "type of change",
-			Min:       0,
-			Max:       0,
-			Options:   []Option{{Name: "fix", Desc: "fix a bug"}, {Name: "style", Desc: "css style"}},
-			Questions: nil,
-		},
-		Cursor: 0,
+		Questions:       config.Questions,
+		ShownAnswered:   "",
+		CurrentQuestion: config.Questions[0],
+		Cursor:          0,
 	}
 }
 
@@ -121,7 +92,7 @@ func selectRender(m *Model) string {
 
 		checked := " "
 
-		str.WriteString(fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice))
+		str.WriteString(fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice.Name))
 	}
 	return str.String()
 }
