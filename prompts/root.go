@@ -3,6 +3,7 @@ package prompts
 import (
 	"fmt"
 	"github.com/JaquesBoeno/CommitWise/utils"
+	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"strings"
 )
@@ -15,6 +16,7 @@ type Model struct {
 	CurrentQuestion      utils.Question
 	CurrentQuestionIndex int
 	Cursor               int
+	TextInput            textinput.Model
 }
 
 func InitialModel(config utils.Settings) Model {
@@ -23,6 +25,7 @@ func InitialModel(config utils.Settings) Model {
 		ShownAnswered:   "",
 		CurrentQuestion: config.Questions[0],
 		Cursor:          0,
+		Answers:         map[string]string{},
 	}
 }
 
@@ -44,7 +47,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch m.CurrentQuestion.Type {
 		case "select":
 			selectBindings(msg.String(), &m)
+		case "text":
+			textBindings(msg.String(), &m)
 		}
+	}
+	switch m.CurrentQuestion.Type {
+	case "text":
+		return m, textUpdate(msg, &m)
 	}
 
 	return m, nil
@@ -57,6 +66,8 @@ func (m Model) View() string {
 	switch m.CurrentQuestion.Type {
 	case "select":
 		str.WriteString(selectRender(&m))
+	case "text":
+		str.WriteString(textRender(&m))
 	}
 
 	str.WriteString("\nPress q to quit.\n")
@@ -68,4 +79,8 @@ func nextPrompt(value string, m *Model) {
 	m.ShownAnswered = m.ShownAnswered + fmt.Sprintf("%s: %s\n", m.CurrentQuestion.Label, value)
 	m.CurrentQuestionIndex++
 	m.CurrentQuestion = m.Questions[m.CurrentQuestionIndex]
+
+	if m.CurrentQuestion.Type == "text" {
+		m.TextInput = newTextInput(newTextInputData{})
+	}
 }
