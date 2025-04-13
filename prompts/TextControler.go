@@ -26,9 +26,8 @@ func textUpdate(msg tea.Msg, m *Model) tea.Cmd {
 
 func textRender(m *Model) string {
 	str := strings.Builder{}
-	str.WriteString(m.CurrentQuestion.Label)
-	str.WriteString("\n\n")
 	str.WriteString(m.TextInput.View())
+	str.WriteString("\n")
 	return str.String()
 }
 

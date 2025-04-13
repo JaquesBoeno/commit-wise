@@ -21,9 +21,16 @@ type option struct {
 	Desc string `yaml:"desc"`
 }
 
+type Colors struct {
+	Primary string `yaml:"primary"`
+	Green   string `yaml:"green"`
+	Red     string `yaml:"red"`
+}
+
 type Settings struct {
 	TemplateCommit string     `yaml:"TemplateCommit"`
 	Questions      []Question `yaml:"Questions"`
+	Colors         Colors     `yaml:"Colors"`
 }
 
 func getConfigPath() (string, error) {

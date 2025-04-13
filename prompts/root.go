@@ -10,6 +10,7 @@ import (
 
 type Model struct {
 	Questions []utils.Question
+	Colors    utils.Colors
 	Answers   map[string]string
 
 	ShownAnswered        string
@@ -22,6 +23,7 @@ type Model struct {
 func InitialModel(config utils.Settings) Model {
 	return Model{
 		Questions:       config.Questions,
+		Colors:          config.Colors,
 		ShownAnswered:   "",
 		CurrentQuestion: config.Questions[0],
 		Cursor:          0,
@@ -40,7 +42,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 
 		// default bindings
-		case "ctrl+c", "q":
+		case "ctrl+c":
 			return m, tea.Quit
 		}
 
@@ -63,6 +65,10 @@ func (m Model) View() string {
 	str := strings.Builder{}
 	str.WriteString(m.ShownAnswered)
 
+	str.WriteString(fmt.Sprintf("\033[%sm? \033[0m", m.Colors.Green))
+	str.WriteString(fmt.Sprintf("\033[1m%s:\033[0m ", m.CurrentQuestion.Label))
+	str.WriteString("\n")
+
 	switch m.CurrentQuestion.Type {
 	case "select":
 		str.WriteString(selectRender(&m))
@@ -70,13 +76,18 @@ func (m Model) View() string {
 		str.WriteString(textRender(&m))
 	}
 
-	str.WriteString("\nPress q to quit.\n")
+	str.WriteString("\nPress ctrl+c to quit.\n")
 	return str.String()
 }
 
 func nextPrompt(value string, m *Model) {
+	str := strings.Builder{}
 	m.Answers[m.CurrentQuestion.Id] = value
-	m.ShownAnswered = m.ShownAnswered + fmt.Sprintf("%s: %s\n", m.CurrentQuestion.Label, value)
+	str.WriteString(fmt.Sprintf("\033[%sm? \033[0m", m.Colors.Green))
+	str.WriteString(fmt.Sprintf("\033[1m%s:\033[0m ", m.CurrentQuestion.Label))
+	str.WriteString(fmt.Sprintf("%s\n", value))
+	m.ShownAnswered = m.ShownAnswered + str.String()
+
 	m.CurrentQuestionIndex++
 	m.CurrentQuestion = m.Questions[m.CurrentQuestionIndex]
 

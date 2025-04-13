@@ -1,6 +1,7 @@
 package prompts
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -29,18 +30,15 @@ func selectBindings(key string, m *Model) {
 
 func selectRender(m *Model) string {
 	str := strings.Builder{}
-
-	str.WriteString(m.CurrentQuestion.Label)
-	str.WriteString("\n\n")
 	choices := m.CurrentQuestion.Options
 
-	windowSize := 5
+	windowSize := 7
 	for i := range windowSize {
 		offset := windowSize / 2
 		choiceIndex := i - offset + m.Cursor
 
 		if choiceIndex-m.Cursor == 0 {
-			str.WriteString("❯ ")
+			str.WriteString(fmt.Sprintf("\u001B[%sm❯ ", m.Colors.Primary))
 		} else {
 			str.WriteString("  ")
 		}
@@ -53,7 +51,7 @@ func selectRender(m *Model) string {
 			str.WriteString(choices[choiceIndex-len(choices)].Name)
 		}
 
-		str.WriteString("\n")
+		str.WriteString("\u001B[0m\n")
 	}
 
 	return str.String()
