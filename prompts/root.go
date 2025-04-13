@@ -9,23 +9,27 @@ import (
 )
 
 type Model struct {
-	Questions []utils.Question
+	Questions utils.QuestionLinkedList
 	Colors    utils.Colors
 	Answers   map[string]string
 
-	ShownAnswered        string
-	CurrentQuestion      utils.Question
-	CurrentQuestionIndex int
-	Cursor               int
-	TextInput            textinput.Model
+	ShownAnswered   string
+	CurrentQuestion *utils.QuestionNode
+	Cursor          int
+	TextInput       textinput.Model
 }
 
-func InitialModel(config utils.Settings) Model {
+type InitData struct {
+	Questions utils.QuestionLinkedList
+	Colors    utils.Colors
+}
+
+func InitialModel(initData InitData) Model {
 	return Model{
-		Questions:       config.Questions,
-		Colors:          config.Colors,
+		Questions:       initData.Questions,
+		Colors:          initData.Colors,
 		ShownAnswered:   "",
-		CurrentQuestion: config.Questions[0],
+		CurrentQuestion: initData.Questions.Head,
 		Cursor:          0,
 		Answers:         map[string]string{},
 	}
@@ -88,8 +92,7 @@ func nextPrompt(value string, m *Model) {
 	str.WriteString(fmt.Sprintf("%s\n", value))
 	m.ShownAnswered = m.ShownAnswered + str.String()
 
-	m.CurrentQuestionIndex++
-	m.CurrentQuestion = m.Questions[m.CurrentQuestionIndex]
+	m.CurrentQuestion = m.CurrentQuestion.NextQuest
 
 	if m.CurrentQuestion.Type == "text" {
 		m.TextInput = newTextInput(newTextInputData{})
