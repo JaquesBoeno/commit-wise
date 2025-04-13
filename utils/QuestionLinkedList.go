@@ -75,6 +75,11 @@ func (list *QuestionLinkedList) InsertAtTail(data QuestionNodeInsert) {
 	list.Tail = newNode
 }
 
+func (list *QuestionLinkedList) InsertListAfterNode(node *QuestionNode, listToAppend QuestionLinkedList) {
+	listToAppend.Tail.NextQuest = node.NextQuest
+	node.NextQuest = listToAppend.Head
+}
+
 func (list *QuestionLinkedList) SPrint() string {
 	mainPrint := strings.Builder{}
 	current := list.Head
