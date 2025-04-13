@@ -1,7 +1,6 @@
 package prompts
 
 import (
-	"fmt"
 	"github.com/JaquesBoeno/CommitWise/utils"
 	tea "github.com/charmbracelet/bubbletea"
 	"strings"
@@ -57,7 +56,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	str := strings.Builder{}
-	str.WriteString(m.ShownAnswered + "\n\n")
+	str.WriteString(m.ShownAnswered)
 
 	switch m.CurrentQuestion.Type {
 	case "select":
@@ -65,34 +64,5 @@ func (m Model) View() string {
 	}
 
 	str.WriteString("\nPress q to quit.\n")
-	return str.String()
-}
-
-func selectBindings(key string, m *Model) {
-	switch key {
-	case "up", "k":
-		if m.Cursor > 0 {
-			m.Cursor--
-		}
-
-	case "down", "j":
-		if m.Cursor < len(m.CurrentQuestion.Options)-1 {
-			m.Cursor++
-		}
-	}
-}
-func selectRender(m *Model) string {
-	str := strings.Builder{}
-
-	for i, choice := range m.CurrentQuestion.Options {
-		cursor := " "
-		if m.Cursor == i {
-			cursor = "➜" // possible cursors "❯" "➜" ">"
-		}
-
-		checked := " "
-
-		str.WriteString(fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice.Name))
-	}
 	return str.String()
 }
