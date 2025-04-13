@@ -1,6 +1,7 @@
 package prompts
 
 import (
+	"fmt"
 	"github.com/JaquesBoeno/CommitWise/utils"
 	tea "github.com/charmbracelet/bubbletea"
 	"strings"
@@ -65,4 +66,14 @@ func (m Model) View() string {
 
 	str.WriteString("\nPress q to quit.\n")
 	return str.String()
+}
+
+func nextPrompt(value string, m *Model) {
+	m.Answers = append(m.Answers, Answer{
+		Id:    m.CurrentQuestion.Id,
+		Value: value,
+	})
+	m.ShownAnswered = m.ShownAnswered + fmt.Sprintf("%s: %s\n", m.CurrentQuestion.Label, value)
+	m.CurrentQuestionIndex++
+	m.CurrentQuestion = m.Questions[m.CurrentQuestionIndex]
 }

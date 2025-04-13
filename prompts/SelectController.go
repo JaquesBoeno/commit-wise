@@ -1,6 +1,8 @@
 package prompts
 
-import "strings"
+import (
+	"strings"
+)
 
 func selectBindings(key string, m *Model) {
 	switch key {
@@ -17,7 +19,12 @@ func selectBindings(key string, m *Model) {
 		} else {
 			m.Cursor = 0
 		}
+
+	case "enter":
+		nextPrompt(m.CurrentQuestion.Options[m.Cursor].Name, m)
+		//fmt.Println("teste")
 	}
+
 }
 
 func selectRender(m *Model) string {
@@ -48,10 +55,6 @@ func selectRender(m *Model) string {
 
 		str.WriteString("\n")
 	}
-
-	str.WriteString("\n")
-	str.WriteString(choices[m.Cursor].Name)
-	str.WriteString("\n")
 
 	return str.String()
 }
