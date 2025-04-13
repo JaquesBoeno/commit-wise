@@ -2,9 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/JaquesBoeno/CommitWise/prompts"
 	"github.com/JaquesBoeno/CommitWise/utils"
-	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -17,12 +15,13 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			fmt.Printf("Error reading config file: %s\n", err)
 		}
-
-		p := tea.NewProgram(prompts.InitialModel(config))
-		if _, err := p.Run(); err != nil {
-			fmt.Printf("there's been an error: %v", err)
-			os.Exit(1)
-		}
+		QuestionsLL := utils.ParseQuestionList(config.Questions)
+		fmt.Println(QuestionsLL.SPrint())
+		//p := tea.NewProgram(prompts.InitialModel(config))
+		//if _, err := p.Run(); err != nil {
+		//	fmt.Printf("there's been an error: %v", err)
+		//	os.Exit(1)
+		//}
 	},
 }
 
