@@ -7,14 +7,9 @@ import (
 	"strings"
 )
 
-type Answer struct {
-	Id    string
-	Value string
-}
-
 type Model struct {
 	Questions []utils.Question
-	Answers   []Answer
+	Answers   map[string]string
 
 	ShownAnswered        string
 	CurrentQuestion      utils.Question
@@ -69,10 +64,7 @@ func (m Model) View() string {
 }
 
 func nextPrompt(value string, m *Model) {
-	m.Answers = append(m.Answers, Answer{
-		Id:    m.CurrentQuestion.Id,
-		Value: value,
-	})
+	m.Answers[m.CurrentQuestion.Id] = value
 	m.ShownAnswered = m.ShownAnswered + fmt.Sprintf("%s: %s\n", m.CurrentQuestion.Label, value)
 	m.CurrentQuestionIndex++
 	m.CurrentQuestion = m.Questions[m.CurrentQuestionIndex]
