@@ -5,8 +5,13 @@ import (
 	"strings"
 )
 
-func BuildCommitMessage(template string, answers map[string]string) string {
+func BuildCommitMessage(template string, answers map[string]string, questionList *QuestionLinkedList) string {
 	message := template
+	for _, key := range questionList.getAllKeys() {
+		if _, exists := answers[key]; !exists {
+			answers[key] = ""
+		}
+	}
 
 	for key, value := range answers {
 		placeholder := fmt.Sprintf("<%s>", key)

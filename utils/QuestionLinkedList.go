@@ -119,3 +119,24 @@ func (list *QuestionLinkedList) SPrint() string {
 
 	return mainPrint.String()
 }
+
+func (list *QuestionLinkedList) getAllKeys() []string {
+	current := list.Head
+	var KeysList []string
+
+	if current == nil {
+		return nil
+	}
+
+	for current != nil {
+		KeysList = append(KeysList, current.Id)
+
+		if current.QuestionLinkedList.Head != nil {
+			KeysList = append(KeysList, current.QuestionLinkedList.getAllKeys()...)
+		}
+
+		current = current.NextQuest
+	}
+
+	return KeysList
+}

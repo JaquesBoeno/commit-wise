@@ -6,6 +6,7 @@ import (
 	"github.com/JaquesBoeno/CommitWise/utils"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
+	"log"
 	"os"
 )
 
@@ -20,14 +21,23 @@ var rootCmd = &cobra.Command{
 
 		QuestionsLL := utils.ParseQuestionList(config.Questions)
 
-		p := tea.NewProgram(prompts.InitialModel(prompts.InitData{
+		InitModel := prompts.InitialModel(prompts.InitData{
 			Questions: QuestionsLL,
 			Colors:    config.Colors,
-		}))
-		if _, err := p.Run(); err != nil {
+		})
+
+		program := tea.NewProgram(InitModel)
+		model, err := program.Run()
+		if err != nil {
 			fmt.Printf("there's been an error: %v", err)
 			os.Exit(1)
 		}
+		promptModel, ok := model.(prompts.Model)
+		if !ok {
+			log.Fatalf("unexpected model type: %T", model)
+		}
+
+		fmt.Print(utils.BuildCommitMessage(config.TemplateCommit, promptModel.Answers, &promptModel.Questions))
 	},
 }
 

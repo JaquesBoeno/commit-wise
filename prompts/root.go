@@ -63,15 +63,17 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			confirmBindings(key, &m)
 		}
 	}
-	switch m.CurrentQuestion.Type {
-	case "text":
-		return m, textUpdate(msg, &m)
-	}
+
 	if m.isQuiting {
 		m.quitNow = true
 	}
 	if m.quitNow {
 		return m, tea.Quit
+	}
+
+	switch m.CurrentQuestion.Type {
+	case "text":
+		return m, textUpdate(msg, &m)
 	}
 
 	return m, nil

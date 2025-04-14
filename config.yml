@@ -44,24 +44,13 @@ Questions:
     min: 0
     max: 1000
 
-  - id: issues
+  - id: issuesConfirm
     type: confirm
     label: "Does this change affect any open issues"
     questions:
-      - id: issue
+      - id: issues
         type: text
         label: "Add issue reference (e.g. fix #123, re #123.)"
-        errorMsg: "write a valid text"
-        min: 0
-        max: 1000
-
-  - id: breakChanges
-    type: confirm
-    label: "Are there any breaking changes"
-    questions:
-      - id: breakChanges
-        type: text
-        label: "Write about this"
         errorMsg: "write a valid text"
         min: 0
         max: 1000
@@ -71,10 +60,7 @@ TemplateCommit: |
 
   <desc>
 
-  BREAKING CHANGE: <breakChanges>
-
-  <issue>
-
+  <issues>
 Colors:
   primary: "36"
   green: "32"
