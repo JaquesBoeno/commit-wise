@@ -48,15 +48,9 @@ Questions:
     type: confirm
     label: "Does this change affect any open issues"
     questions:
-      - id: issues
+      - id: issue
         type: text
-        label: "Write about this"
-        errorMsg: "write a valid text"
-        min: 0
-        max: 1000
-      - id: issues2
-        type: text
-        label: "Write about this 2"
+        label: "Add issue reference (e.g. fix #123, re #123.)"
         errorMsg: "write a valid text"
         min: 0
         max: 1000
@@ -79,9 +73,7 @@ TemplateCommit: |
 
   BREAKING CHANGE: <breakChanges>
 
-  <issues>
-
-  <issues2>
+  <issue>
 
 Colors:
   primary: "36"

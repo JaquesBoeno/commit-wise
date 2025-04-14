@@ -9,14 +9,17 @@ import (
 )
 
 type Model struct {
-	Questions utils.QuestionLinkedList
-	Colors    utils.Colors
-	Answers   map[string]string
-
-	ShownAnswered   string
+	Questions       utils.QuestionLinkedList
+	Colors          utils.Colors
+	Answers         map[string]string
 	CurrentQuestion *utils.QuestionNode
-	Cursor          int
-	TextInput       textinput.Model
+	isQuiting       bool
+	quitNow         bool
+
+	ShownAnswered string
+	Cursor        int
+	TextInput     textinput.Model
+	ConfirmInput  string
 }
 
 type InitData struct {
@@ -43,7 +46,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 
 	case tea.KeyMsg:
-		switch msg.String() {
+		key := msg.String()
+		switch key {
 
 		// default bindings
 		case "ctrl+c":
@@ -52,14 +56,22 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		switch m.CurrentQuestion.Type {
 		case "select":
-			selectBindings(msg.String(), &m)
+			selectBindings(key, &m)
 		case "text":
-			textBindings(msg.String(), &m)
+			textBindings(key, &m)
+		case "confirm":
+			confirmBindings(key, &m)
 		}
 	}
 	switch m.CurrentQuestion.Type {
 	case "text":
 		return m, textUpdate(msg, &m)
+	}
+	if m.isQuiting {
+		m.quitNow = true
+	}
+	if m.quitNow {
+		return m, tea.Quit
 	}
 
 	return m, nil
@@ -68,7 +80,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m Model) View() string {
 	str := strings.Builder{}
 	str.WriteString(m.ShownAnswered)
-
+	if m.isQuiting {
+		return str.String()
+	}
 	str.WriteString(fmt.Sprintf("\033[%sm? \033[0m", m.Colors.Green))
 	str.WriteString(fmt.Sprintf("\033[1m%s:\033[0m ", m.CurrentQuestion.Label))
 	str.WriteString("\n")
@@ -78,6 +92,8 @@ func (m Model) View() string {
 		str.WriteString(selectRender(&m))
 	case "text":
 		str.WriteString(textRender(&m))
+	case "confirm":
+		str.WriteString(confirmRender(&m))
 	}
 
 	str.WriteString("\nPress ctrl+c to quit.\n")
@@ -89,12 +105,18 @@ func nextPrompt(value string, m *Model) {
 	m.Answers[m.CurrentQuestion.Id] = value
 	str.WriteString(fmt.Sprintf("\033[%sm? \033[0m", m.Colors.Green))
 	str.WriteString(fmt.Sprintf("\033[1m%s:\033[0m ", m.CurrentQuestion.Label))
-	str.WriteString(fmt.Sprintf("%s\n", value))
+	str.WriteString(fmt.Sprintf("\033[%sm%s\033[0m\n", m.Colors.Primary, value))
 	m.ShownAnswered = m.ShownAnswered + str.String()
 
-	m.CurrentQuestion = m.CurrentQuestion.NextQuest
-
-	if m.CurrentQuestion.Type == "text" {
-		m.TextInput = newTextInput(newTextInputData{})
+	if m.CurrentQuestion.NextQuest != nil {
+		m.CurrentQuestion = m.CurrentQuestion.NextQuest
+		switch m.CurrentQuestion.Type {
+		case "text":
+			m.TextInput = newTextInput(newTextInputData{})
+		case "confirm":
+			m.ConfirmInput = ""
+		}
+	} else {
+		m.isQuiting = true
 	}
 }
