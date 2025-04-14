@@ -36,8 +36,12 @@ var rootCmd = &cobra.Command{
 		if !ok {
 			log.Fatalf("unexpected model type: %T", model)
 		}
-
-		fmt.Print(utils.BuildCommitMessage(config.TemplateCommit, promptModel.Answers, &promptModel.Questions))
+		commitMessage := utils.BuildCommitMessage(config.TemplateCommit, promptModel.Answers, &promptModel.Questions)
+		out, err := utils.Commit(commitMessage)
+		if err != nil {
+			fmt.Errorf("There was an error committing: %v", err)
+		}
+		fmt.Println(out)
 	},
 }
 
