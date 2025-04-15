@@ -8,7 +8,7 @@ import (
 )
 
 type Question struct {
-	Id        string     `yaml:"id"`
+	Key       string     `yaml:"key"`
 	Type      string     `yaml:"type"`
 	Label     string     `yaml:"label"`
 	Min       int        `yaml:"min"`

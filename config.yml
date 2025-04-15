@@ -1,5 +1,5 @@
 Questions:
-  - id: type
+  - key: type
     type: select
     label: "Select the type of change you're committing"
     options:
@@ -24,31 +24,31 @@ Questions:
       - name: WIP
         desc: "WIP: Work in progress"
 
-  - id: scope
+  - key: scope
     type: text
     label: "What scope of this change? (e.g. backend or cli)"
     min: 1
     max: 66
 
-  - id: subject
+  - key: subject
     type: text
     label: "Write a short, imperative tense description of change (max 66 chars)"
     errorMsg: "Write a minimal 1 and max 66 chars"
     min: 1
     max: 66
 
-  - id: desc
+  - key: desc
     type: text
     label: "Provide a large description of the changes: (press enter for skip)"
     errorMsg: "write a valid text"
     min: 0
     max: 1000
 
-  - id: issuesConfirm
+  - key: issuesConfirm
     type: confirm
     label: "Does this change affect any open issues"
     questions:
-      - id: issues
+      - key: issues
         type: text
         label: "Add issue reference (e.g. fix #123, re #123.)"
         errorMsg: "write a valid text"

@@ -104,7 +104,7 @@ func (m Model) View() string {
 
 func nextPrompt(value string, m *Model) {
 	str := strings.Builder{}
-	m.Answers[m.CurrentQuestion.Id] = value
+	m.Answers[m.CurrentQuestion.Key] = value
 	str.WriteString(fmt.Sprintf("\033[%sm? \033[0m", m.Colors.Green))
 	str.WriteString(fmt.Sprintf("\033[1m%s:\033[0m ", m.CurrentQuestion.Label))
 	str.WriteString(fmt.Sprintf("\033[%sm%s\033[0m\n", m.Colors.Primary, value))

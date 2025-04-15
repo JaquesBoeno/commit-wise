@@ -6,7 +6,7 @@ import (
 )
 
 type QuestionNodeInsert struct {
-	Id                 string
+	Key                string
 	Type               string
 	Label              string
 	Min                int
@@ -16,7 +16,7 @@ type QuestionNodeInsert struct {
 }
 
 type QuestionNode struct {
-	Id                 string
+	Key                string
 	Type               string
 	Label              string
 	Min                int
@@ -40,7 +40,7 @@ func ParseQuestionList(Questions []Question) QuestionLinkedList {
 
 	for _, Question := range Questions {
 		list.InsertAtTail(QuestionNodeInsert{
-			Id:                 Question.Id,
+			Key:                Question.Key,
 			Type:               Question.Type,
 			Label:              Question.Label,
 			Min:                Question.Min,
@@ -55,7 +55,7 @@ func ParseQuestionList(Questions []Question) QuestionLinkedList {
 
 func (list *QuestionLinkedList) InsertAtTail(data QuestionNodeInsert) {
 	newNode := &QuestionNode{
-		Id:                 data.Id,
+		Key:                data.Key,
 		Type:               data.Type,
 		Label:              data.Label,
 		Min:                data.Min,
@@ -92,7 +92,7 @@ func (list *QuestionLinkedList) SPrint() string {
 	for current != nil {
 		str := strings.Builder{}
 		str.WriteString(fmt.Sprintf("Node #%d\n", index))
-		str.WriteString(fmt.Sprintf("  ID:     %s\n", current.Id))
+		str.WriteString(fmt.Sprintf("  Key:     %s\n", current.Key))
 		str.WriteString(fmt.Sprintf("  Type:   %s\n", current.Type))
 		str.WriteString(fmt.Sprintf("  Label:  %s\n", current.Label))
 		str.WriteString(fmt.Sprintf("  Min:    %d\n", current.Min))
@@ -129,7 +129,7 @@ func (list *QuestionLinkedList) getAllKeys() []string {
 	}
 
 	for current != nil {
-		KeysList = append(KeysList, current.Id)
+		KeysList = append(KeysList, current.Key)
 
 		if current.QuestionLinkedList.Head != nil {
 			KeysList = append(KeysList, current.QuestionLinkedList.getAllKeys()...)
