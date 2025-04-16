@@ -8,13 +8,14 @@ import (
 )
 
 type Question struct {
-	Key       string     `yaml:"key"`
-	Type      string     `yaml:"type"`
-	Label     string     `yaml:"label"`
-	Min       int        `yaml:"min"`
-	Max       int        `yaml:"max"`
-	Options   []option   `yaml:"options"`
-	Questions []Question `yaml:"questions"`
+	Key                  string     `yaml:"key"`
+	Type                 string     `yaml:"type"`
+	Label                string     `yaml:"label"`
+	Min                  int        `yaml:"min"`
+	Max                  int        `yaml:"max"`
+	Options              []option   `yaml:"options"`
+	SubquestionCondition *string    `yaml:"subquestionCondition"`
+	Questions            []Question `yaml:"questions"`
 }
 type option struct {
 	Name string `yaml:"name"`

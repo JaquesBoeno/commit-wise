@@ -33,25 +33,38 @@ func selectRender(m *Model) string {
 	choices := m.CurrentQuestion.Options
 
 	windowSize := 7
-	for i := range windowSize {
-		offset := windowSize / 2
-		choiceIndex := i - offset + m.Cursor
+	if len(choices) > windowSize {
+		for i := range windowSize {
+			offset := windowSize / 2
+			choiceIndex := i - offset + m.Cursor
 
-		if choiceIndex-m.Cursor == 0 {
-			str.WriteString(fmt.Sprintf("\u001B[%sm❯ ", m.Colors.Primary))
-		} else {
-			str.WriteString("  ")
+			if choiceIndex-m.Cursor == 0 {
+				str.WriteString(fmt.Sprintf("\u001B[%sm❯ ", m.Colors.Primary))
+			} else {
+				str.WriteString("  ")
+			}
+
+			if choiceIndex >= 0 && choiceIndex <= len(choices)-1 {
+				str.WriteString(choices[choiceIndex].Name)
+			} else if choiceIndex < 0 {
+				str.WriteString(choices[len(choices)+choiceIndex].Name)
+			} else if choiceIndex >= len(choices) {
+				str.WriteString(choices[choiceIndex-len(choices)].Name)
+			}
+
+			str.WriteString("\u001B[0m\n")
 		}
+	} else {
+		for i, choice := range choices {
+			if m.Cursor == i {
+				str.WriteString(fmt.Sprintf("\u001B[%sm❯ ", m.Colors.Primary))
+			} else {
+				str.WriteString("  ")
+			}
+			str.WriteString(choice.Name)
+			str.WriteString("\u001B[0m\n")
 
-		if choiceIndex >= 0 && choiceIndex <= len(choices)-1 {
-			str.WriteString(choices[choiceIndex].Name)
-		} else if choiceIndex < 0 {
-			str.WriteString(choices[len(choices)+choiceIndex].Name)
-		} else if choiceIndex >= len(choices) {
-			str.WriteString(choices[choiceIndex-len(choices)].Name)
 		}
-
-		str.WriteString("\u001B[0m\n")
 	}
 
 	return str.String()

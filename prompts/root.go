@@ -19,7 +19,6 @@ type Model struct {
 	ShownAnswered string
 	Cursor        int
 	TextInput     textinput.Model
-	ConfirmInput  string
 }
 
 type InitData struct {
@@ -59,8 +58,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			selectBindings(key, &m)
 		case "text":
 			textBindings(key, &m)
-		case "confirm":
-			confirmBindings(key, &m)
 		}
 	}
 
@@ -94,8 +91,6 @@ func (m Model) View() string {
 		str.WriteString(selectRender(&m))
 	case "text":
 		str.WriteString(textRender(&m))
-	case "confirm":
-		str.WriteString(confirmRender(&m))
 	}
 
 	str.WriteString("\nPress ctrl+c to quit.\n")
@@ -110,13 +105,15 @@ func nextPrompt(value string, m *Model) {
 	str.WriteString(fmt.Sprintf("\033[%sm%s\033[0m\n", m.Colors.Primary, value))
 	m.ShownAnswered = m.ShownAnswered + str.String()
 
+	if m.CurrentQuestion.SubQuestionCondition != nil && *m.CurrentQuestion.SubQuestionCondition == value {
+		m.Questions.InsertListAfterNode(m.CurrentQuestion, m.CurrentQuestion.QuestionLinkedList)
+	}
+
 	if m.CurrentQuestion.NextQuest != nil {
 		m.CurrentQuestion = m.CurrentQuestion.NextQuest
 		switch m.CurrentQuestion.Type {
 		case "text":
 			m.TextInput = newTextInput(newTextInputData{})
-		case "confirm":
-			m.ConfirmInput = ""
 		}
 	} else {
 		m.isQuiting = true

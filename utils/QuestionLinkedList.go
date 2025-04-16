@@ -6,24 +6,26 @@ import (
 )
 
 type QuestionNodeInsert struct {
-	Key                string
-	Type               string
-	Label              string
-	Min                int
-	Max                int
-	Options            []option
-	QuestionLinkedList QuestionLinkedList
+	Key                  string
+	Type                 string
+	Label                string
+	Min                  int
+	Max                  int
+	Options              []option
+	SubQuestionCondition *string
+	QuestionLinkedList   QuestionLinkedList
 }
 
 type QuestionNode struct {
-	Key                string
-	Type               string
-	Label              string
-	Min                int
-	Max                int
-	Options            []option
-	QuestionLinkedList QuestionLinkedList
-	NextQuest          *QuestionNode
+	Key                  string
+	Type                 string
+	Label                string
+	Min                  int
+	Max                  int
+	Options              []option
+	SubQuestionCondition *string
+	QuestionLinkedList   QuestionLinkedList
+	NextQuest            *QuestionNode
 }
 
 type QuestionLinkedList struct {
@@ -40,13 +42,14 @@ func ParseQuestionList(Questions []Question) QuestionLinkedList {
 
 	for _, Question := range Questions {
 		list.InsertAtTail(QuestionNodeInsert{
-			Key:                Question.Key,
-			Type:               Question.Type,
-			Label:              Question.Label,
-			Min:                Question.Min,
-			Max:                Question.Max,
-			Options:            Question.Options,
-			QuestionLinkedList: ParseQuestionList(Question.Questions),
+			Key:                  Question.Key,
+			Type:                 Question.Type,
+			Label:                Question.Label,
+			Min:                  Question.Min,
+			Max:                  Question.Max,
+			Options:              Question.Options,
+			SubQuestionCondition: Question.SubquestionCondition,
+			QuestionLinkedList:   ParseQuestionList(Question.Questions),
 		})
 	}
 
@@ -55,14 +58,15 @@ func ParseQuestionList(Questions []Question) QuestionLinkedList {
 
 func (list *QuestionLinkedList) InsertAtTail(data QuestionNodeInsert) {
 	newNode := &QuestionNode{
-		Key:                data.Key,
-		Type:               data.Type,
-		Label:              data.Label,
-		Min:                data.Min,
-		Max:                data.Max,
-		Options:            data.Options,
-		QuestionLinkedList: data.QuestionLinkedList,
-		NextQuest:          nil,
+		Key:                  data.Key,
+		Type:                 data.Type,
+		Label:                data.Label,
+		Min:                  data.Min,
+		Max:                  data.Max,
+		Options:              data.Options,
+		QuestionLinkedList:   data.QuestionLinkedList,
+		SubQuestionCondition: data.SubQuestionCondition,
+		NextQuest:            nil,
 	}
 
 	if list.Head == nil {

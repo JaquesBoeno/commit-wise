@@ -45,8 +45,12 @@ Questions:
     max: 1000
 
   - key: issuesConfirm
-    type: confirm
+    type: select
     label: "Does this change affect any open issues"
+    options:
+      - name: no
+      - name: yes
+    subquestionCondition: yes
     questions:
       - key: issues
         type: text
