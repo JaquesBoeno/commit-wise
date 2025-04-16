@@ -2,6 +2,7 @@ package prompts
 
 import (
 	"fmt"
+	"github.com/JaquesBoeno/CommitWise/utils"
 	"strings"
 )
 
@@ -31,12 +32,17 @@ func selectBindings(key string, m *Model) {
 func selectRender(m *Model) string {
 	str := strings.Builder{}
 	choices := m.CurrentQuestion.Options
+	maxLengthChoiceName := 0
+	for _, choice := range choices {
+		maxLengthChoiceName = max(maxLengthChoiceName, len(choice.Name))
+	}
 
 	windowSize := 7
 	if len(choices) > windowSize {
 		for i := range windowSize {
 			offset := windowSize / 2
 			choiceIndex := i - offset + m.Cursor
+			var choice utils.Option
 
 			if choiceIndex-m.Cursor == 0 {
 				str.WriteString(fmt.Sprintf("\u001B[%sm❯ ", m.Colors.Primary))
@@ -45,13 +51,14 @@ func selectRender(m *Model) string {
 			}
 
 			if choiceIndex >= 0 && choiceIndex <= len(choices)-1 {
-				str.WriteString(choices[choiceIndex].Name)
+				choice = choices[choiceIndex]
 			} else if choiceIndex < 0 {
-				str.WriteString(choices[len(choices)+choiceIndex].Name)
+				choice = choices[len(choices)+choiceIndex]
 			} else if choiceIndex >= len(choices) {
-				str.WriteString(choices[choiceIndex-len(choices)].Name)
+				choice = choices[choiceIndex-len(choices)]
 			}
-
+			str.WriteString(padEnd(choice.Name+": ", maxLengthChoiceName+2, ' '))
+			str.WriteString(choice.Desc)
 			str.WriteString("\u001B[0m\n")
 		}
 	} else {
@@ -68,4 +75,12 @@ func selectRender(m *Model) string {
 	}
 
 	return str.String()
+}
+
+func padEnd(str string, length int, pad rune) string {
+	for len(str) < length {
+		str += string(pad)
+	}
+
+	return str
 }

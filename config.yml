@@ -10,7 +10,7 @@ Questions:
       - name: docs
         desc: "Documentation only changes"
       - name: style
-        desc: "Changes that do not affect the meaning of the code\n(white-space, formatting, missing semi-colons, etc)"
+        desc: "Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)"
       - name: refactor
         desc: "A code change that neither fixes a bug nor adds a feature"
       - name: perf
@@ -18,7 +18,7 @@ Questions:
       - name: test
         desc: "Adding missing tests"
       - name: chore
-        desc: "Changes to the build process or auxiliary tools\nand libraries such as documentation generation"
+        desc: "Changes to the build process or auxiliary tools and libraries such as documentation generation"
       - name: revert
         desc: "Revert to a commit"
       - name: WIP

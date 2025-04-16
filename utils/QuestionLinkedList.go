@@ -5,24 +5,13 @@ import (
 	"strings"
 )
 
-type QuestionNodeInsert struct {
-	Key                  string
-	Type                 string
-	Label                string
-	Min                  int
-	Max                  int
-	Options              []option
-	SubQuestionCondition *string
-	QuestionLinkedList   QuestionLinkedList
-}
-
 type QuestionNode struct {
 	Key                  string
 	Type                 string
 	Label                string
 	Min                  int
 	Max                  int
-	Options              []option
+	Options              []Option
 	SubQuestionCondition *string
 	QuestionLinkedList   QuestionLinkedList
 	NextQuest            *QuestionNode
@@ -41,7 +30,7 @@ func ParseQuestionList(Questions []Question) QuestionLinkedList {
 	}
 
 	for _, Question := range Questions {
-		list.InsertAtTail(QuestionNodeInsert{
+		list.InsertAtTail(QuestionNode{
 			Key:                  Question.Key,
 			Type:                 Question.Type,
 			Label:                Question.Label,
@@ -56,7 +45,7 @@ func ParseQuestionList(Questions []Question) QuestionLinkedList {
 	return list
 }
 
-func (list *QuestionLinkedList) InsertAtTail(data QuestionNodeInsert) {
+func (list *QuestionLinkedList) InsertAtTail(data QuestionNode) {
 	newNode := &QuestionNode{
 		Key:                  data.Key,
 		Type:                 data.Type,

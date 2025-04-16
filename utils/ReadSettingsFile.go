@@ -13,11 +13,11 @@ type Question struct {
 	Label                string     `yaml:"label"`
 	Min                  int        `yaml:"min"`
 	Max                  int        `yaml:"max"`
-	Options              []option   `yaml:"options"`
+	Options              []Option   `yaml:"options"`
 	SubquestionCondition *string    `yaml:"subquestionCondition"`
 	Questions            []Question `yaml:"questions"`
 }
-type option struct {
+type Option struct {
 	Name string `yaml:"name"`
 	Desc string `yaml:"desc"`
 }
