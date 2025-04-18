@@ -19,6 +19,7 @@ type Model struct {
 	ShownAnswered string
 	Cursor        int
 	TextInput     textinput.Model
+	width         int
 }
 
 type InitData struct {
@@ -34,6 +35,7 @@ func InitialModel(initData InitData) Model {
 		CurrentQuestion: initData.Questions.Head,
 		Cursor:          0,
 		Answers:         map[string]string{},
+		width:           1,
 	}
 }
 
@@ -46,6 +48,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyMsg:
 		key := msg.String()
+
 		switch key {
 
 		// default bindings
@@ -59,6 +62,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "text":
 			textBindings(key, &m)
 		}
+	case tea.WindowSizeMsg:
+		m.width = msg.Width
 	}
 
 	if m.isQuiting {
@@ -94,7 +99,8 @@ func (m Model) View() string {
 	}
 
 	str.WriteString("\nPress ctrl+c to quit.\n")
-	return str.String()
+
+	return utils.WrapText(str.String(), m.width)
 }
 
 func nextPrompt(value string, m *Model) {
