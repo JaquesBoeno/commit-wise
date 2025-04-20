@@ -1,4 +1,4 @@
-package utils
+package questions
 
 import (
 	"fmt"
@@ -6,15 +6,8 @@ import (
 )
 
 type QuestionNode struct {
-	Key                  string
-	Type                 string
-	Label                string
-	Min                  int
-	Max                  int
-	Options              []Option
-	SubQuestionCondition *string
-	QuestionLinkedList   QuestionLinkedList
-	NextQuest            *QuestionNode
+	Question
+	NextQuest *QuestionNode
 }
 
 type QuestionLinkedList struct {
@@ -31,41 +24,23 @@ func ParseQuestionList(Questions []Question) QuestionLinkedList {
 
 	for _, Question := range Questions {
 		list.InsertAtTail(QuestionNode{
-			Key:                  Question.Key,
-			Type:                 Question.Type,
-			Label:                Question.Label,
-			Min:                  Question.Min,
-			Max:                  Question.Max,
-			Options:              Question.Options,
-			SubQuestionCondition: Question.SubquestionCondition,
-			QuestionLinkedList:   ParseQuestionList(Question.Questions),
+			Question:  Question,
+			NextQuest: nil,
 		})
 	}
 
 	return list
 }
 
-func (list *QuestionLinkedList) InsertAtTail(data QuestionNode) {
-	newNode := &QuestionNode{
-		Key:                  data.Key,
-		Type:                 data.Type,
-		Label:                data.Label,
-		Min:                  data.Min,
-		Max:                  data.Max,
-		Options:              data.Options,
-		QuestionLinkedList:   data.QuestionLinkedList,
-		SubQuestionCondition: data.SubQuestionCondition,
-		NextQuest:            nil,
-	}
-
+func (list *QuestionLinkedList) InsertAtTail(newNode QuestionNode) {
 	if list.Head == nil {
-		list.Head = newNode
-		list.Tail = newNode
+		list.Head = &newNode
+		list.Tail = &newNode
 		return
 	}
 
-	list.Tail.NextQuest = newNode
-	list.Tail = newNode
+	list.Tail.NextQuest = &newNode
+	list.Tail = &newNode
 }
 
 func (list *QuestionLinkedList) InsertListAfterNode(node *QuestionNode, listToAppend QuestionLinkedList) {
@@ -88,20 +63,23 @@ func (list *QuestionLinkedList) SPrint() string {
 		str.WriteString(fmt.Sprintf("  Key:     %s\n", current.Key))
 		str.WriteString(fmt.Sprintf("  Type:   %s\n", current.Type))
 		str.WriteString(fmt.Sprintf("  Label:  %s\n", current.Label))
-		str.WriteString(fmt.Sprintf("  Min:    %d\n", current.Min))
-		str.WriteString(fmt.Sprintf("  Max:    %d\n", current.Max))
+		str.WriteString("  Data:\n")
 
-		if len(current.Options) > 0 {
-			str.WriteString(fmt.Sprintf("  Options:\n"))
-			for i, opt := range current.Options {
-				str.WriteString(fmt.Sprintf("    %d: %+v\n", i+1, opt))
+		switch data := current.Data.(type) {
+		case SelectQuestionData:
+			str.WriteString(fmt.Sprintf("    Options:\n"))
+			for i, opt := range data.Options {
+				str.WriteString(fmt.Sprintf("      %d: %+v\n", i+1, opt))
 			}
+		case TextQuestionData:
+			str.WriteString(fmt.Sprintf("    Placeholder: %s\n", data.Placeholder))
+			str.WriteString(fmt.Sprintf("    Min: %d\n", data.Min))
+			str.WriteString(fmt.Sprintf("    Max: %d\n", data.Max))
 		}
-
-		if current.QuestionLinkedList.Head != nil {
+		if current.SubQuestions.Head != nil {
 			str.WriteString("  Sub-Questions:\n")
 			str.WriteString("	")
-			str.WriteString(strings.ReplaceAll(current.QuestionLinkedList.SPrint(), "\n", "\n	"))
+			str.WriteString(strings.ReplaceAll(current.SubQuestions.SPrint(), "\n", "\n	"))
 		}
 
 		str.WriteString("\n")
@@ -113,7 +91,7 @@ func (list *QuestionLinkedList) SPrint() string {
 	return mainPrint.String()
 }
 
-func (list *QuestionLinkedList) getAllKeys() []string {
+func (list *QuestionLinkedList) GetAllKeys() []string {
 	current := list.Head
 	var KeysList []string
 
@@ -124,8 +102,8 @@ func (list *QuestionLinkedList) getAllKeys() []string {
 	for current != nil {
 		KeysList = append(KeysList, current.Key)
 
-		if current.QuestionLinkedList.Head != nil {
-			KeysList = append(KeysList, current.QuestionLinkedList.getAllKeys()...)
+		if current.SubQuestions.Head != nil {
+			KeysList = append(KeysList, current.SubQuestions.GetAllKeys()...)
 		}
 
 		current = current.NextQuest

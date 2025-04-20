@@ -6,7 +6,7 @@ type Question struct {
 	Type                 string
 	Data                 QuestionType
 	SubQuestionCondition string
-	Questions            QuestionLinkedList
+	SubQuestions         QuestionLinkedList
 }
 
 type QuestionType interface {
