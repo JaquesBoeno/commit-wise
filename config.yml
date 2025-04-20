@@ -2,62 +2,65 @@ Questions:
   - key: type
     type: select
     label: "Select the type of change you're committing"
-    options:
-      - name: feat
-        desc: "A new feature"
-      - name: fix
-        desc: "A bug fix"
-      - name: docs
-        desc: "Documentation only changes"
-      - name: style
-        desc: "Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)"
-      - name: refactor
-        desc: "A code change that neither fixes a bug nor adds a feature"
-      - name: perf
-        desc: "A code change that improves performance"
-      - name: test
-        desc: "Adding missing tests"
-      - name: chore
-        desc: "Changes to the build process or auxiliary tools and libraries such as documentation generation"
-      - name: revert
-        desc: "Revert to a commit"
-      - name: WIP
-        desc: "WIP: Work in progress"
+    data:
+      options:
+        - value: feat
+          desc: "A new feature"
+        - value: fix
+          desc: "A bug fix"
+        - value: docs
+          desc: "Documentation only changes"
+        - value: style
+          desc: "Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)"
+        - value: refactor
+          desc: "A code change that neither fixes a bug nor adds a feature"
+        - value: perf
+          desc: "A code change that improves performance"
+        - value: test
+          desc: "Adding missing tests"
+        - value: chore
+          desc: "Changes to the build process or auxiliary tools and libraries such as documentation generation"
+        - value: revert
+          desc: "Revert to a commit"
+        - value: WIP
+          desc: "WIP: Work in progress"
 
   - key: scope
     type: text
     label: "What scope of this change? (e.g. backend or cli)"
-    min: 1
-    max: 66
+    data:
+      min: 1
+      max: 66
 
   - key: subject
     type: text
     label: "Write a short, imperative tense description of change (max 66 chars)"
-    errorMsg: "Write a minimal 1 and max 66 chars"
-    min: 1
-    max: 66
+    data:
+      min: 1
+      max: 66
 
   - key: desc
     type: text
+    data:
+      min: 0
+      max: 1000
     label: "Provide a large description of the changes: (press enter for skip)"
-    errorMsg: "write a valid text"
-    min: 0
-    max: 1000
 
   - key: issuesConfirm
     type: select
     label: "Does this change affect any open issues"
-    options:
-      - name: no
-      - name: yes
-    subquestionCondition: yes
-    questions:
+    data:
+      options:
+        - value: no
+        - value: yes
+    subquestion_condition: yes
+    subquestions:
       - key: issues
         type: text
         label: "Add issue reference (e.g. fix #123, re #123.)"
-        errorMsg: "write a valid text"
-        min: 0
-        max: 1000
+        data:
+          min: 0
+          max: 1000
 
 TemplateCommit: |
   <type>(<scope>): <subject>
