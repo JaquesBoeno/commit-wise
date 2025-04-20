@@ -2,6 +2,7 @@ package prompts
 
 import (
 	"fmt"
+	"github.com/JaquesBoeno/CommitWise/questions"
 	"github.com/JaquesBoeno/CommitWise/utils"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -9,10 +10,9 @@ import (
 )
 
 type Model struct {
-	Questions       utils.QuestionLinkedList
-	Colors          utils.Colors
+	Questions       questions.QuestionLinkedList
 	Answers         map[string]string
-	CurrentQuestion *utils.QuestionNode
+	CurrentQuestion *questions.QuestionNode
 	isQuiting       bool
 	quitNow         bool
 
@@ -23,14 +23,12 @@ type Model struct {
 }
 
 type InitData struct {
-	Questions utils.QuestionLinkedList
-	Colors    utils.Colors
+	Questions questions.QuestionLinkedList
 }
 
 func InitialModel(initData InitData) Model {
 	return Model{
 		Questions:       initData.Questions,
-		Colors:          initData.Colors,
 		ShownAnswered:   "",
 		CurrentQuestion: initData.Questions.Head,
 		Cursor:          0,
@@ -87,14 +85,14 @@ func (m Model) View() string {
 	if m.isQuiting {
 		return str.String()
 	}
-	str.WriteString(fmt.Sprintf("\033[%sm? \033[0m", m.Colors.Green))
+	str.WriteString("\033[32m? \033[0m")
 	str.WriteString(fmt.Sprintf("\033[1m%s:\033[0m ", m.CurrentQuestion.Label))
 	str.WriteString("\n")
 
-	switch m.CurrentQuestion.Type {
-	case "select":
+	switch m.CurrentQuestion.Data.(type) {
+	case questions.SelectQuestionData:
 		str.WriteString(selectRender(&m))
-	case "text":
+	case questions.TextQuestionData:
 		str.WriteString(textRender(&m))
 	}
 
@@ -106,13 +104,13 @@ func (m Model) View() string {
 func nextPrompt(value string, m *Model) {
 	str := strings.Builder{}
 	m.Answers[m.CurrentQuestion.Key] = value
-	str.WriteString(fmt.Sprintf("\033[%sm? \033[0m", m.Colors.Green))
+	str.WriteString("\033[32m? \033[0m")
 	str.WriteString(fmt.Sprintf("\033[1m%s:\033[0m ", m.CurrentQuestion.Label))
-	str.WriteString(fmt.Sprintf("\033[%sm%s\033[0m\n", m.Colors.Primary, value))
+	str.WriteString(fmt.Sprintf("\033[36m%s\033[0m\n", value))
 	m.ShownAnswered = m.ShownAnswered + str.String()
 
-	if m.CurrentQuestion.SubQuestionCondition != nil && *m.CurrentQuestion.SubQuestionCondition == value {
-		m.Questions.InsertListAfterNode(m.CurrentQuestion, m.CurrentQuestion.QuestionLinkedList)
+	if m.CurrentQuestion.SubQuestionCondition == value && m.CurrentQuestion.SubQuestionCondition != "" {
+		m.Questions.InsertListAfterNode(m.CurrentQuestion, m.CurrentQuestion.SubQuestions)
 	}
 
 	if m.CurrentQuestion.NextQuest != nil {

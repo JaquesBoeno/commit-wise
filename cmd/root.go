@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/JaquesBoeno/CommitWise/config"
+	"github.com/JaquesBoeno/CommitWise/git"
 	"github.com/JaquesBoeno/CommitWise/prompts"
-	"github.com/JaquesBoeno/CommitWise/utils"
+	"github.com/JaquesBoeno/CommitWise/questions"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 	"log"
@@ -14,16 +16,15 @@ var rootCmd = &cobra.Command{
 	Use:   "commitwise",
 	Short: "CommitWise is a smart commit helper tool",
 	Run: func(cmd *cobra.Command, args []string) {
-		config, err := utils.ReadSettingFile()
+		config, err := config.ReadSettingFile()
 		if err != nil {
 			fmt.Printf("Error reading config file: %s\n", err)
 		}
 
-		QuestionsLL := utils.ParseQuestionList(config.Questions)
+		QuestionsLL := questions.ParseQuestionList(config.Questions)
 
 		InitModel := prompts.InitialModel(prompts.InitData{
 			Questions: QuestionsLL,
-			Colors:    config.Colors,
 		})
 
 		program := tea.NewProgram(InitModel)
@@ -36,10 +37,10 @@ var rootCmd = &cobra.Command{
 		if !ok {
 			log.Fatalf("unexpected model type: %T", model)
 		}
-		commitMessage := utils.BuildCommitMessage(config.TemplateCommit, promptModel.Answers, &promptModel.Questions)
-		err = utils.Commit(commitMessage)
+		commitMessage := git.BuildCommitMessage(config.TemplateCommit, promptModel.Answers, &promptModel.Questions)
+		err = git.Commit(commitMessage)
 		if err != nil {
-			fmt.Errorf("There was an error committing: %v", err)
+			fmt.Errorf("there was an error committing: %v", err)
 		}
 	},
 }

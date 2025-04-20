@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/JaquesBoeno/CommitWise/cmd"
-)
+import "github.com/JaquesBoeno/CommitWise/cmd"
 
 func main() {
 	cmd.Execute()
