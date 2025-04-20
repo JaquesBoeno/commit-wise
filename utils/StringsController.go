@@ -36,3 +36,11 @@ func removeANSIEscapeCodes(input string) string {
 	re := regexp.MustCompile(`\x1b\[[0-9;]*[A-Za-z]`)
 	return re.ReplaceAllString(input, "")
 }
+
+func NormalizeNewlines(s string) string {
+	for strings.Contains(s, "\n\n\n") {
+		s = strings.ReplaceAll(s, "\n\n\n", "\n\n")
+	}
+
+	return s
+}

@@ -1,13 +1,15 @@
-package utils
+package git
 
 import (
 	"fmt"
+	"github.com/JaquesBoeno/CommitWise/questions"
+	"github.com/JaquesBoeno/CommitWise/utils"
 	"strings"
 )
 
-func BuildCommitMessage(template string, answers map[string]string, questionList *QuestionLinkedList) string {
+func BuildCommitMessage(template string, answers map[string]string, questionList *questions.QuestionLinkedList) string {
 	message := template
-	for _, key := range questionList.getAllKeys() {
+	for _, key := range questionList.GetAllKeys() {
 		if _, exists := answers[key]; !exists {
 			answers[key] = ""
 		}
@@ -18,15 +20,7 @@ func BuildCommitMessage(template string, answers map[string]string, questionList
 		message = strings.ReplaceAll(message, placeholder, value)
 	}
 
-	message = normalizeNewlines(message)
+	message = utils.NormalizeNewlines(message)
 
 	return message
-}
-
-func normalizeNewlines(s string) string {
-	for strings.Contains(s, "\n\n\n") {
-		s = strings.ReplaceAll(s, "\n\n\n", "\n\n")
-	}
-
-	return s
 }
