@@ -4,12 +4,12 @@ type Question struct {
 	Key                  string
 	Label                string
 	Type                 string
-	Data                 QuestionType
+	Data                 QuestionData
 	SubQuestionCondition string
 	SubQuestions         QuestionLinkedList
 }
 
-type QuestionType interface {
+type QuestionData interface {
 	GetType() string
 }
 

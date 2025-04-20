@@ -2,6 +2,7 @@ package questions
 
 import (
 	"fmt"
+	"github.com/JaquesBoeno/CommitWise/config"
 	"strings"
 )
 
@@ -15,16 +16,44 @@ type QuestionLinkedList struct {
 	Tail *QuestionNode
 }
 
-func ParseQuestionList(Questions []Question) QuestionLinkedList {
+func ParseQuestionList(QuestionsConfig []config.QuestionConfig) QuestionLinkedList {
 	list := QuestionLinkedList{}
 
-	if len(Questions) == 0 {
+	if len(QuestionsConfig) == 0 {
 		return list
 	}
 
-	for _, Question := range Questions {
+	for _, q := range QuestionsConfig {
+		var parsedData QuestionData
+		switch data := q.Data.(type) {
+		case config.SelectQuestionDataConfig:
+			options := make([]Option, len(data.Options))
+			for i, option := range data.Options {
+				options[i] = Option{
+					Value: option.Value,
+					Desc:  option.Desc,
+				}
+			}
+			parsedData = SelectQuestionData{
+				Options: options,
+			}
+		case config.TextQuestionDataConfig:
+			parsedData = TextQuestionData{
+				Placeholder: data.Placeholder,
+				Min:         data.Min,
+				Max:         data.Max,
+			}
+		}
+
 		list.InsertAtTail(QuestionNode{
-			Question:  Question,
+			Question: Question{
+				Key:                  q.Key,
+				Label:                q.Label,
+				Type:                 q.Type,
+				Data:                 parsedData,
+				SubQuestionCondition: q.SubQuestionCondition,
+				SubQuestions:         ParseQuestionList(q.SubQuestions),
+			},
 			NextQuest: nil,
 		})
 	}
@@ -60,21 +89,21 @@ func (list *QuestionLinkedList) SPrint() string {
 	for current != nil {
 		str := strings.Builder{}
 		str.WriteString(fmt.Sprintf("Node #%d\n", index))
-		str.WriteString(fmt.Sprintf("  Key:     %s\n", current.Key))
+		str.WriteString(fmt.Sprintf("  Key:    %s\n", current.Key))
 		str.WriteString(fmt.Sprintf("  Type:   %s\n", current.Type))
 		str.WriteString(fmt.Sprintf("  Label:  %s\n", current.Label))
 		str.WriteString("  Data:\n")
 
 		switch data := current.Data.(type) {
 		case SelectQuestionData:
-			str.WriteString(fmt.Sprintf("    Options:\n"))
+			str.WriteString(fmt.Sprintf("    - Options:\n"))
 			for i, opt := range data.Options {
 				str.WriteString(fmt.Sprintf("      %d: %+v\n", i+1, opt))
 			}
 		case TextQuestionData:
-			str.WriteString(fmt.Sprintf("    Placeholder: %s\n", data.Placeholder))
-			str.WriteString(fmt.Sprintf("    Min: %d\n", data.Min))
-			str.WriteString(fmt.Sprintf("    Max: %d\n", data.Max))
+			str.WriteString(fmt.Sprintf("    - Placeholder: %s\n", data.Placeholder))
+			str.WriteString(fmt.Sprintf("    - Min: %d\n", data.Min))
+			str.WriteString(fmt.Sprintf("    - Max: %d\n", data.Max))
 		}
 		if current.SubQuestions.Head != nil {
 			str.WriteString("  Sub-Questions:\n")
