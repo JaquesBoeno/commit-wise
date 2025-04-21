@@ -44,3 +44,11 @@ func NormalizeNewlines(s string) string {
 
 	return s
 }
+
+func PadEnd(str string, length int, pad rune) string {
+	for len(str) < length {
+		str += string(pad)
+	}
+
+	return str
+}
