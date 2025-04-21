@@ -35,7 +35,7 @@ func selectRender(m *Model) string {
 	if data, ok := m.CurrentQuestion.Data.(questions.SelectQuestionData); ok {
 		choices := data.Options
 		windowSize := 7
-		highlightStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("32"))
+		highlightStyle := lipgloss.NewStyle().Foreground(lipgloss.Color(m.Colors.Primary))
 		maxLengthChoiceName := 0
 
 		for _, choice := range choices {

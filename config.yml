@@ -30,21 +30,23 @@ Questions:
     label: "What scope of this change? (e.g. backend or cli)"
     data:
       min: 1
-      max: 66
+      max: 0
+      placeholder: "Some PlaceHolder from config"
 
   - key: subject
     type: text
-    label: "Write a short, imperative tense description of change (max 66 chars)"
+    label: "Write a short, imperative tense description of change"
     data:
       min: 1
       max: 66
 
   - key: desc
     type: text
+    label: "Provide a large description of the changes: (press enter for skip)"
     data:
       min: 0
-      max: 1000
-    label: "Provide a large description of the changes: (press enter for skip)"
+      max: -1
+      placeholder: "Some PlaceHolder from config"
 
   - key: issuesConfirm
     type: select
@@ -68,8 +70,9 @@ TemplateCommit: |
   <desc>
 
   <issues>
+
 Colors:
-  primary: "36"
-  secondary: "32"
-  green: "32"
-  red: "31"
+  primary: "6"
+  secondary: "2"
+  green: "2"
+  red: "1"

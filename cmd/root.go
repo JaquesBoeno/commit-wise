@@ -25,6 +25,7 @@ var rootCmd = &cobra.Command{
 
 		InitModel := prompts.InitialModel(prompts.InitData{
 			Questions: QuestionsLL,
+			Colors:    config.Colors,
 		})
 
 		program := tea.NewProgram(InitModel)

@@ -8,8 +8,14 @@ import (
 type Settings struct {
 	Questions      []QuestionConfig `yaml:"Questions"`
 	TemplateCommit string           `yaml:"TemplateCommit"`
+	Colors         Colors           `yaml:"Colors"`
 }
-
+type Colors struct {
+	Primary   string `yaml:"primary"`
+	Secondary string `yaml:"secondary"`
+	Green     string `yaml:"green"`
+	Red       string `yaml:"red"`
+}
 type QuestionConfig struct {
 	Key                  string           `yaml:"key"`
 	Label                string           `yaml:"label"`

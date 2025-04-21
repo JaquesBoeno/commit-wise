@@ -1,6 +1,7 @@
 package prompts
 
 import (
+	"github.com/JaquesBoeno/CommitWise/config"
 	"github.com/JaquesBoeno/CommitWise/questions"
 	"github.com/JaquesBoeno/CommitWise/utils"
 	"github.com/charmbracelet/bubbles/textinput"
@@ -13,6 +14,7 @@ type Model struct {
 	Questions       questions.QuestionLinkedList
 	Answers         map[string]string
 	CurrentQuestion *questions.QuestionNode
+	Colors          config.Colors
 	isQuiting       bool
 	quitNow         bool
 
@@ -23,15 +25,28 @@ type Model struct {
 }
 
 // Setup styles
-var questionMarkStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("36"))
+var questionMarkStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("6"))
 var labelStyle = lipgloss.NewStyle().Bold(true)
-var valueStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("32"))
+var valueStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("2"))
 
 type InitData struct {
 	Questions questions.QuestionLinkedList
+	Colors    config.Colors
 }
 
 func InitialModel(initData InitData) Model {
+	TextInput := newTextInput(newTextInputData{})
+	questionMarkStyle = questionMarkStyle.Foreground(lipgloss.Color(initData.Colors.Secondary))
+	valueStyle = valueStyle.Foreground(lipgloss.Color(initData.Colors.Primary))
+
+	switch data := initData.Questions.Head.Data.(type) {
+	case questions.TextQuestionData:
+		TextInput = newTextInput(newTextInputData{
+			placeholder: data.Placeholder,
+			max:         data.Max,
+			min:         data.Min,
+		})
+	}
 	return Model{
 		Questions:       initData.Questions,
 		ShownAnswered:   "",
@@ -39,6 +54,8 @@ func InitialModel(initData InitData) Model {
 		Cursor:          0,
 		Answers:         map[string]string{},
 		width:           1,
+		TextInput:       TextInput,
+		Colors:          initData.Colors,
 	}
 }
 
@@ -118,9 +135,13 @@ func nextPrompt(value string, m *Model) {
 
 	if m.CurrentQuestion.NextQuest != nil {
 		m.CurrentQuestion = m.CurrentQuestion.NextQuest
-		switch m.CurrentQuestion.Type {
-		case "text":
-			m.TextInput = newTextInput(newTextInputData{})
+		switch data := m.CurrentQuestion.Data.(type) {
+		case questions.TextQuestionData:
+			m.TextInput = newTextInput(newTextInputData{
+				placeholder: data.Placeholder,
+				max:         data.Max,
+				min:         data.Min,
+			})
 		}
 	} else {
 		m.isQuiting = true
