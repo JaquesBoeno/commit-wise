@@ -70,5 +70,6 @@ TemplateCommit: |
   <issues>
 Colors:
   primary: "36"
+  secondary: "32"
   green: "32"
   red: "31"

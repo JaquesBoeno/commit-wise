@@ -1,11 +1,11 @@
 package prompts
 
 import (
-	"fmt"
 	"github.com/JaquesBoeno/CommitWise/questions"
 	"github.com/JaquesBoeno/CommitWise/utils"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"strings"
 )
 
@@ -21,6 +21,11 @@ type Model struct {
 	TextInput     textinput.Model
 	width         int
 }
+
+// Setup styles
+var questionMarkStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("36"))
+var labelStyle = lipgloss.NewStyle().Bold(true)
+var valueStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("32"))
 
 type InitData struct {
 	Questions questions.QuestionLinkedList
@@ -85,10 +90,13 @@ func (m Model) View() string {
 	if m.isQuiting {
 		return str.String()
 	}
-	str.WriteString("\033[32m? \033[0m")
-	str.WriteString(fmt.Sprintf("\033[1m%s:\033[0m ", m.CurrentQuestion.Label))
+
+	// Render the question label
+	str.WriteString(questionMarkStyle.Render("? "))
+	str.WriteString(labelStyle.Render(m.CurrentQuestion.Label))
 	str.WriteString("\n")
 
+	// Render the Current Question
 	switch m.CurrentQuestion.Data.(type) {
 	case questions.SelectQuestionData:
 		str.WriteString(selectRender(&m))
@@ -97,17 +105,12 @@ func (m Model) View() string {
 	}
 
 	str.WriteString("\nPress ctrl+c to quit.\n")
-
 	return utils.WrapText(str.String(), m.width)
 }
 
 func nextPrompt(value string, m *Model) {
-	str := strings.Builder{}
 	m.Answers[m.CurrentQuestion.Key] = value
-	str.WriteString("\033[32m? \033[0m")
-	str.WriteString(fmt.Sprintf("\033[1m%s:\033[0m ", m.CurrentQuestion.Label))
-	str.WriteString(fmt.Sprintf("\033[36m%s\033[0m\n", value))
-	m.ShownAnswered = m.ShownAnswered + str.String()
+	m.ShownAnswered = m.ShownAnswered + formatShownAnswered(m.CurrentQuestion.Label, value)
 
 	if m.CurrentQuestion.SubQuestionCondition == value && m.CurrentQuestion.SubQuestionCondition != "" {
 		m.Questions.InsertListAfterNode(m.CurrentQuestion, m.CurrentQuestion.SubQuestions)
@@ -122,4 +125,15 @@ func nextPrompt(value string, m *Model) {
 	} else {
 		m.isQuiting = true
 	}
+}
+
+func formatShownAnswered(label, value string) string {
+	str := strings.Builder{}
+
+	str.WriteString(questionMarkStyle.Render("? "))
+	str.WriteString(labelStyle.Render(label + ": "))
+	str.WriteString(valueStyle.Render(value))
+	str.WriteString("\n")
+
+	return str.String()
 }

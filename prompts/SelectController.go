@@ -35,28 +35,33 @@ func selectRender(m *Model) string {
 	if data, ok := m.CurrentQuestion.Data.(questions.SelectQuestionData); ok {
 		choices := data.Options
 		windowSize := 7
-
+		highlightStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("32"))
 		maxLengthChoiceName := 0
+
 		for _, choice := range choices {
 			maxLengthChoiceName = max(maxLengthChoiceName, len(choice.Value))
 		}
 
-		for _, choiceIndex := range slideWindowsOptions(len(choices), windowSize, m.Cursor) {
-			curChoice := choices[choiceIndex]
-			highlightStyle := lipgloss.NewStyle()
-			var cursorStr string
+		slideIndex := slideWindowsOptions(len(choices), windowSize, m.Cursor)
 
-			if choiceIndex-m.Cursor == 0 {
-				cursorStr = "❯ "
-				highlightStyle = highlightStyle.Foreground(lipgloss.Color("32"))
-			} else {
-				cursorStr = "  "
+		for _, idx := range slideIndex {
+			curChoice := choices[idx]
+			isSelect := idx-m.Cursor == 0
+			paddedValue := utils.PadEnd(curChoice.Value+": ", maxLengthChoiceName+2, ' ')
+
+			cursor := "  "
+			if isSelect {
+				cursor = "❯ "
 			}
 
-			str.WriteString(highlightStyle.Render(cursorStr))
-			str.WriteString(highlightStyle.Render(utils.PadEnd(curChoice.Value+": ", maxLengthChoiceName+2, ' ')))
-			str.WriteString(highlightStyle.Render(curChoice.Desc))
-			str.WriteString("\u001B[0m\n")
+			line := strings.Join([]string{cursor, paddedValue, curChoice.Desc}, "")
+
+			if isSelect {
+				str.WriteString(highlightStyle.Render(line))
+			} else {
+				str.WriteString(line)
+			}
+			str.WriteString("\n")
 		}
 	}
 	return str.String()
