@@ -40,6 +40,10 @@ func runCommitWiseFlow() error {
 		return fmt.Errorf("unexpected model type: %T", model)
 	}
 
+	if promptModel.Error != nil {
+		return promptModel.Error
+	}
+
 	commitMessage := git.BuildCommitMessage(cfg.TemplateCommit, promptModel.Answers, &promptModel.Questions)
 
 	if err = git.Commit(commitMessage); err != nil {
@@ -65,7 +69,6 @@ Perfect for teams and individuals who want to keep their commit history organize
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
 		os.Exit(1)
 	}
 }

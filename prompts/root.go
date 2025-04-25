@@ -1,6 +1,7 @@
 package prompts
 
 import (
+	"fmt"
 	"github.com/JaquesBoeno/CommitWise/config"
 	"github.com/JaquesBoeno/CommitWise/questions"
 	"github.com/JaquesBoeno/CommitWise/utils"
@@ -15,6 +16,7 @@ type Model struct {
 	Answers         map[string]string
 	CurrentQuestion *questions.QuestionNode
 	Colors          config.Colors
+	Error           error
 	isQuiting       bool
 	quitNow         bool
 
@@ -73,7 +75,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		// default bindings
 		case "ctrl+c":
-			return m, tea.Quit
+			m.Error = fmt.Errorf("program closed")
+			m.isQuiting = true
 		}
 
 		switch m.CurrentQuestion.Type {
