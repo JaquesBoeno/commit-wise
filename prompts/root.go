@@ -108,6 +108,9 @@ func (m Model) View() string {
 	str := strings.Builder{}
 	str.WriteString(m.ShownAnswered)
 	if m.isQuiting {
+		if str.String() != "" {
+			str.WriteString("\n")
+		}
 		return str.String()
 	}
 
