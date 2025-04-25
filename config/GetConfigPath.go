@@ -6,21 +6,21 @@ import (
 	"path/filepath"
 )
 
-func getConfigPath() (string, error) {
-	devPath := "config.yml"
-	if _, err := os.Stat(devPath); err == nil {
-		return devPath, nil
+func GetConfigPath() (string, error) {
+	localPath := "config.yml"
+	if _, err := os.Stat(localPath); err == nil {
+		return localPath, nil
 	}
 
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
 	}
-	prodPath := filepath.Join(home, ".config", "commitwise", "config.yml")
+	configPath := filepath.Join(home, ".config", "commitwise", "config.yml")
 
-	if _, err := os.Stat(prodPath); err == nil {
-		return prodPath, nil
+	if _, err := os.Stat(configPath); err == nil {
+		return configPath, nil
 	}
 
-	return "", fmt.Errorf("settings file not found in either %s or %s", devPath, prodPath)
+	return "", fmt.Errorf("settings file not found in either %s or %s", localPath, configPath)
 }
