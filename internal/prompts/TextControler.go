@@ -2,7 +2,7 @@ package prompts
 
 import (
 	"fmt"
-	"github.com/JaquesBoeno/CommitWise/questions"
+	"github.com/JaquesBoeno/CommitWise/internal/questions"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"

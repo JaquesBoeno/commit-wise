@@ -1,8 +1,8 @@
 package prompts
 
 import (
-	"github.com/JaquesBoeno/CommitWise/questions"
-	"github.com/JaquesBoeno/CommitWise/utils"
+	"github.com/JaquesBoeno/CommitWise/internal/questions"
+	"github.com/JaquesBoeno/CommitWise/internal/utils"
 	"github.com/charmbracelet/lipgloss"
 	"strings"
 )

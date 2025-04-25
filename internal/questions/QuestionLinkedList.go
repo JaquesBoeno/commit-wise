@@ -2,7 +2,7 @@ package questions
 
 import (
 	"fmt"
-	"github.com/JaquesBoeno/CommitWise/config"
+	"github.com/JaquesBoeno/CommitWise/internal/config"
 	"strings"
 )
 

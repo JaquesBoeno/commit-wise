@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/JaquesBoeno/CommitWise/config"
-	"github.com/JaquesBoeno/CommitWise/git"
-	"github.com/JaquesBoeno/CommitWise/prompts"
-	"github.com/JaquesBoeno/CommitWise/questions"
+	"github.com/JaquesBoeno/CommitWise/internal/config"
+	"github.com/JaquesBoeno/CommitWise/internal/git"
+	"github.com/JaquesBoeno/CommitWise/internal/prompts"
+	"github.com/JaquesBoeno/CommitWise/internal/questions"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 	"os"

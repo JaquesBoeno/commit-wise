@@ -2,8 +2,8 @@ package git
 
 import (
 	"fmt"
-	"github.com/JaquesBoeno/CommitWise/questions"
-	"github.com/JaquesBoeno/CommitWise/utils"
+	"github.com/JaquesBoeno/CommitWise/internal/questions"
+	"github.com/JaquesBoeno/CommitWise/internal/utils"
 	"strings"
 )
 
