@@ -148,6 +148,8 @@ func nextPrompt(value string, m *Model) {
 				max:         data.Max,
 				min:         data.Min,
 			})
+		case questions.SelectQuestionData:
+			m.Cursor = 0
 		}
 	} else {
 		m.isQuiting = true

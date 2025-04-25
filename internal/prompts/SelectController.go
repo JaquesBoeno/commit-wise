@@ -47,7 +47,13 @@ func selectRender(m *Model) string {
 		for _, idx := range slideIndex {
 			curChoice := choices[idx]
 			isSelect := idx-m.Cursor == 0
-			paddedValue := utils.PadEnd(curChoice.Value+": ", maxLengthChoiceName+2, ' ')
+			var paddedValue string
+
+			if curChoice.Desc != "" {
+				paddedValue = utils.PadEnd(curChoice.Value+": ", maxLengthChoiceName+2, ' ')
+			} else {
+				paddedValue = utils.PadEnd(curChoice.Value, maxLengthChoiceName+2, ' ')
+			}
 
 			cursor := "  "
 			if isSelect {
