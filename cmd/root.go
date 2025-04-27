@@ -11,15 +11,26 @@ import (
 	"os"
 )
 
-func runCommitWiseFlow() error {
-	configPath, err := config.GetConfigPath()
+func runCommitWiseFlow(cmd *cobra.Command, args []string) error {
+	var configPath string
+
+	cfgFlag, err := cmd.Flags().GetString("config")
 	if err != nil {
-		return fmt.Errorf("error getting file path: %s", err)
+		return fmt.Errorf("getting file path from --config flag: %s", err)
+	}
+
+	if len(cfgFlag) > 0 {
+		configPath = cfgFlag
+	} else {
+		configPath, err = config.GetConfigPath()
+		if err != nil {
+			return fmt.Errorf("getting file path: %s", err)
+		}
 	}
 
 	cfg, err := config.ReadSettingFile(configPath)
 	if err != nil {
-		return fmt.Errorf("error reading config file: %s", err)
+		return fmt.Errorf("reading config file: %s", err)
 	}
 
 	questionsList := questions.ParseQuestionList(cfg.Questions)
@@ -47,7 +58,7 @@ func runCommitWiseFlow() error {
 	commitMessage := git.BuildCommitMessage(cfg.TemplateCommit, promptModel.Answers, &promptModel.Questions)
 
 	if err = git.Commit(commitMessage); err != nil {
-		return fmt.Errorf("there was an error committing: %v", err)
+		return fmt.Errorf("committing: %v", err)
 	}
 
 	return nil
@@ -63,8 +74,12 @@ It provides a user-friendly terminal interface that guides you through building 
 Perfect for teams and individuals who want to keep their commit history organized, meaningful, and aligned with best practices.`,
 	Version: "0.0.1",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return runCommitWiseFlow()
+		return runCommitWiseFlow(cmd, args)
 	},
+}
+
+func init() {
+	rootCmd.PersistentFlags().String("config", "", "specify config file path")
 }
 
 func Execute() {
