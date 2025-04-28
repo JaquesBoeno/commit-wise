@@ -53,6 +53,7 @@ func ParseQuestionList(QuestionsConfig []config.QuestionConfig) QuestionLinkedLi
 				Data:                 parsedData,
 				SubQuestionCondition: q.SubQuestionCondition,
 				SubQuestions:         ParseQuestionList(q.SubQuestions),
+				TemplateString:       q.TemplateString,
 			},
 			NextQuest: nil,
 		})
@@ -92,6 +93,7 @@ func (list *QuestionLinkedList) SPrint() string {
 		str.WriteString(fmt.Sprintf("  Key:    %s\n", current.Key))
 		str.WriteString(fmt.Sprintf("  Type:   %s\n", current.Type))
 		str.WriteString(fmt.Sprintf("  Label:  %s\n", current.Label))
+		str.WriteString(fmt.Sprintf("  TpStr:  %s\n", current.TemplateString))
 		str.WriteString("  Data:\n")
 
 		switch data := current.Data.(type) {

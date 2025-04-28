@@ -4,8 +4,9 @@ type Question struct {
 	Key                  string
 	Label                string
 	Type                 string
-	Data                 QuestionData
 	SubQuestionCondition string
+	TemplateString       string
+	Data                 QuestionData
 	SubQuestions         QuestionLinkedList
 }
 

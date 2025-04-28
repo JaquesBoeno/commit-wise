@@ -28,9 +28,8 @@ Questions:
   - key: scope
     type: text
     label: "What scope of this change? (e.g. backend or cli)"
+    template_string: "(<value>)"
     data:
-      min: 1
-      max: 0
       placeholder: "Some PlaceHolder from config"
 
   - key: subject
@@ -38,7 +37,7 @@ Questions:
     label: "Write a short, imperative tense description of change"
     data:
       min: 1
-      max: 66
+      max: 70
 
   - key: desc
     type: text
@@ -62,7 +61,7 @@ Questions:
         label: "Add issue reference (e.g. fix #123, re #123.)"
         data:
           min: 0
-          max: 1000
+          max: -1
 
 TemplateCommit: |
   <type>(<scope>): <subject>

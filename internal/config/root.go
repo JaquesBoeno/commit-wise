@@ -23,6 +23,7 @@ type QuestionConfig struct {
 	Data                 interface{}      `yaml:"-"`
 	SubQuestionCondition string           `yaml:"subquestion_condition"`
 	SubQuestions         []QuestionConfig `yaml:"subquestions"`
+	TemplateString       string           `yaml:"template_string"`
 }
 
 type OptionConfig struct {
@@ -45,6 +46,7 @@ type QuestionConfigAlias struct {
 	Type                 string           `yaml:"type"`
 	Label                string           `yaml:"label"`
 	SubQuestionCondition string           `yaml:"subquestion_condition"`
+	TemplateString       string           `yaml:"template_string"`
 	SubQuestions         []QuestionConfig `yaml:"subquestions"`
 }
 
@@ -59,6 +61,7 @@ func (q *QuestionConfig) UnmarshalYAML(value *yaml.Node) error {
 	q.Type = alias.Type
 	q.SubQuestions = alias.SubQuestions
 	q.SubQuestionCondition = alias.SubQuestionCondition
+	q.TemplateString = alias.TemplateString
 
 	var dataNode *yaml.Node
 	for i := 0; i < len(value.Content); i += 2 {
