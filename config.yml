@@ -63,10 +63,29 @@ Questions:
           min: 0
           max: -1
 
+  - key: breakingChangesConfirm
+    type: select
+    label: "Are there any breaking changes?"
+    data:
+      options:
+        - value: no
+        - value: yes
+    subquestion_condition: yes
+    subquestions:
+      - key: breaking-change
+        type: text
+        label: "summary of the breaking change"
+        template_string: "BREAKING CHANGE: <value>"
+        data:
+          min: 0
+          max: -1
+
 TemplateCommit: |
-  <type>(<scope>): <subject>
+  <type><scope>: <subject>
 
   <desc>
+
+  <breaking-change>
 
   <issues>
 
